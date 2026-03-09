@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forma — Textile Collection</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #ecd9d2;
+            --surface: #ffffff;
+            --text: #1a1514;
+            --muted: #998078;
+            --accent: #c8766e;
+            --border: #e8dbd8;
+            --card-bg: #fcf9f8;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom cursor */
+        .cursor {
+            width: 6px;
+            height: 6px;
+            background: var(--text);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            /* use transform for position — GPU composited, zero layout cost */
+            will-change: transform;
+            transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s;
+            top: 0;
+            left: 0;
+        }
+
+        .cursor-ring {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid rgba(26, 24, 20, 0.35);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            will-change: transform;
+            transition: width 0.25s ease, height 0.25s ease, border-color 0.25s, background 0.25s, opacity 0.25s;
+            top: 0;
+            left: 0;
+        }
+
+        /* Cursor states */
+        .cursor.on-link {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+        }
+
+        .cursor-ring.on-link {
+            width: 44px;
+            height: 44px;
+            border-color: var(--accent);
+        }
+
+        .cursor.on-image {
+            width: 70px;
+            height: 70px;
+            background: rgba(200, 169, 110, 0.12);
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+        }
+
+        .cursor-ring.on-image {
+            opacity: 0;
+        }
+
+        .cursor.on-btn {
+            width: 54px;
+            height: 54px;
+            background: rgba(26, 24, 20, 0.06);
+            border: 1.5px solid var(--text);
+            border-radius: 50%;
+        }
+
+        .cursor-ring.on-btn {
+            opacity: 0;
+        }
+
+        /* Cursor label (shows "View" on images) */
+        .cursor-label {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        .cursor-label.visible {
+            opacity: 1;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.6rem 4rem;
+            background: rgba(247, 245, 242, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        nav.scrolled {
+            border-color: var(--border);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-cta {
+            background: var(--text);
+            color: var(--bg) !important;
+            padding: 0.55rem 1.4rem;
+            border-radius: 2px;
+            transition: background 0.2s, color 0.2s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent) !important;
+            color: #fff !important;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 8rem 4rem 4rem;
+            gap: 4rem;
+        }
+
+        .hero-left {
+            padding-top: 2rem;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.8rem;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.2s forwards;
+        }
+
+        .hero-tag::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 300;
+            line-height: 1.08;
+            letter-spacing: -0.01em;
+            color: var(--text);
+            opacity: 0;
+            animation: fadeUp 0.8s 0.35s forwards;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-desc {
+            margin-top: 1.8rem;
+            font-size: 0.95rem;
+            color: var(--muted);
+            line-height: 1.8;
+            max-width: 400px;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.5s forwards;
+        }
+
+        .hero-actions {
+            margin-top: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            opacity: 0;
+            animation: fadeUp 0.8s 0.65s forwards;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+            padding: 0.85rem 2rem;
+            border: none;
+            border-radius: 2px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: none;
+            transition: background 0.2s, transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost {
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s, gap 0.2s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            gap: 0.7rem;
+        }
+
+        .hero-right {
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 1s 0.4s forwards;
+        }
+
+        .hero-img-wrap {
+            aspect-ratio: 4/5;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+
+        .hero-img-wrap:hover img {
+            transform: scale(1.03);
+        }
+
+        .hero-badge {
+            position: absolute;
+            bottom: -1.5rem;
+            left: -2rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1rem 1.4rem;
+            border-radius: 4px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .badge-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .badge-label {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 0.2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Stats strip */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 0 4rem;
+        }
+
+        .stat {
+            padding: 2rem;
+            text-align: center;
+            border-right: 1px solid var(--border);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--text);
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 0.3rem;
+        }
+
+        /* Section styles */
+        section {
+            padding: 6rem 4rem;
+        }
+
+        .section-tag {
+            font-size: 0.72rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-tag::before {
+            content: '';
+            width: 20px;
+            height: 1px;
+            background: var(--accent);
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 3.5vw, 3.2rem);
+            font-weight: 300;
+            line-height: 1.15;
+            color: var(--text);
+        }
+
+        h2 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        /* Products Grid */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+        }
+
+        .product-card.featured {
+            grid-row: span 2;
+        }
+
+        .card-img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+            background: var(--border);
+        }
+
+        .product-card.featured .card-img {
+            aspect-ratio: 3/4;
+        }
+
+        .product-card:hover .card-img {
+            transform: scale(1.04);
+        }
+
+        .card-img-wrap {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--surface);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.6rem;
+            border-radius: 2px;
+            color: var(--text);
+        }
+
+        .card-body {
+            padding: 1.2rem 1.4rem 1.4rem;
+        }
+
+        .card-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 0.4rem;
+        }
+
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--text);
+        }
+
+        .card-btn {
+            width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            cursor: none;
+            transition: background 0.2s, border-color 0.2s;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .card-btn:hover {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
+
+        /* Feature section */
+        .feature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .feature-img {
+            aspect-ratio: 1;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .feature-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .feature-list {
+            margin-top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 1rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-item:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            background: rgba(200, 169, 110, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            margin-top: 0.1rem;
+        }
+
+        .feature-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 0.2rem;
+        }
+
+        .feature-desc {
+            font-size: 0.8rem;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Testimonial */
+        .testimonial-section {
+            background: var(--text);
+            color: var(--bg);
+            padding: 5rem 4rem;
+            text-align: center;
+        }
+
+        .testimonial-section h2 {
+            color: var(--bg);
+        }
+
+        .testimonial-section h2 em {
+            color: var(--accent);
+        }
+
+        blockquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.3rem, 2.5vw, 2rem);
+            font-weight: 300;
+            font-style: italic;
+            color: rgba(247, 245, 242, 0.85);
+            max-width: 700px;
+            margin: 2rem auto;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            font-size: 0.78rem;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            padding: 7rem 4rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cta-section p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            margin-bottom: 2.5rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .footer-links a {
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        /* Image placeholders using CSS art */
+        .img-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--muted);
+            background: linear-gradient(135deg, #ede9e3 0%, #e0dbd2 100%);
+        }
+
+        .img-placeholder.dark {
+            background: linear-gradient(135deg, #2a2620 0%, #1a1814 100%);
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 7rem 1.5rem 3rem;
+                gap: 3rem;
+            }
+
+            .hero-right {
+                order: -1;
+            }
+
+            .stats {
+                margin: 0 1.5rem;
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .product-card.featured {
+                grid-row: auto;
+            }
+
+            .feature-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    
+        /* Dropdown */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background-color: var(--surface);
+            min-width: 200px;
+            box-shadow: 0px 8px 24px 0px rgba(0,0,0,0.06);
+            z-index: 101;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .dropdown-content a {
+            color: var(--text) !important;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 0.75rem;
+            transition: background 0.2s, color 0.2s !important;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--card-bg) !important;
+            color: var(--accent) !important;
+        }
+
+            /* Thread wave */
+        .card-img-wrap, .feature-img {
+            position: relative;
+            overflow: hidden;
+        }
+        .thread-line {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            z-index: 20;
+        }
+        .thread-h { height: 1.5px; width: 0; }
+        .thread-v { width: 1.5px; height: 0; }
+        
+        @keyframes threadShootH {
+            0% { width: 0; opacity: 1; left: 0; }
+            50% { width: 100%; opacity: 1; left: 0; }
+            100% { width: 0; opacity: 0; left: 100%; }
+        }
+        @keyframes threadShootV {
+            0% { height: 0; opacity: 1; top: 0; }
+            50% { height: 100%; opacity: 1; top: 0; }
+            100% { height: 0; opacity: 0; top: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="cursor-label" id="cursorLabel"></div>
+
+    <!-- Nav -->
+    <nav id="navbar">
+        <a href="#" class="logo">Forma</a>
+        <ul class="nav-links">
+            <li><a href="frontend.html">Home</a></li>
+            <li class="dropdown">
+                <a href="#products">Products ▾</a>
+                <div class="dropdown-content">
+                    <a href="seafood.html">Sea Food</a>
+                    <a href="vegetables-turmeric.html">Vegetables & Turmeric</a>
+                    <a href="textile.html">Textiles</a>
+                </div>
+            </li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#story">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-tag">Artisanal Weaves 2025</div>
+            <h1>Woven with<br><em>tradition and</em><br>passion</h1>
+            <p class="hero-desc">Finely crafted textiles made from sustainable fibers. Each thread tells a story of heritage and expert craftsmanship.</p>
+            <div class="hero-actions">
+                <a href="#products" class="btn-primary">Explore Collection</a>
+                <a href="#story" class="btn-ghost">Our Story →</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="hero-img-wrap">
+                <div class="img-placeholder dark">🖼</div>
+            </div>
+            <div class="hero-badge">
+                <div class="badge-num">500+</div>
+                <div class="badge-label">Artisan Weavers</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats reveal">
+        <div class="stat">
+            <div class="stat-num">12yr</div>
+            <div class="stat-label">Of Craftsmanship</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">98%</div>
+            <div class="stat-label">Customer Satisfaction</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">50+</div>
+            <div class="stat-label">Countries Reached</div>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <section id="products">
+        <div class="products-header reveal">
+            <div>
+                <div class="section-tag">Textile Gallery</div>
+                <h2>Threads of<br><em>elegance</em></h2>
+            </div>
+        </div>
+
+        <div class="products-grid reveal" id="textile-grid">
+
+            <a href="#" class="product-card" style="text-decoration: none;">
+                <div class="card-img-wrap">
+                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #e8dbd8; color: #1a1514;">🧺</div>
+                    <span class="card-tag">Bestseller</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">Woven Linen Throw</div>
+                    <div class="card-desc">Portuguese linen, stone-washed for softness and durability.</div>
+                </div>
+            </a>
+            <a href="#" class="product-card" style="text-decoration: none;">
+                <div class="card-img-wrap">
+                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #e8dbd8; color: #1a1514;">🧶</div>
+                    <span class="card-tag">New</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">Artisanal Cotton Rug</div>
+                    <div class="card-desc">Hand-loomed organic cotton rug, dyed with natural plant extracts.</div>
+                </div>
+            </a>
+            <a href="#" class="product-card" style="text-decoration: none;">
+                <div class="card-img-wrap">
+                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #e8dbd8; color: #1a1514;">🧣</div>
+                    <span class="card-tag">Limited</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-name">Hand-dyed Silk Scarf</div>
+                    <div class="card-desc">100% pure silk, woven and dyed by master artisans using ancient techniques.</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Feature section -->
+    <section id="about"
+        style="background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+        <div class="feature-section">
+            <div class="feature-img reveal">
+                <div class="img-placeholder dark" style="min-height: 480px;">🖼</div>
+            </div>
+            <div class="reveal">
+                <div class="section-tag">Why Our Textiles</div>
+                <h2>Woven to<br><em>perfection</em></h2>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">🌿</div>
+                        <div>
+                            <div class="feature-name">Sustainable Materials</div>
+                            <div class="feature-desc">Sourced from certified suppliers with full traceability — from raw
+                                material to your hands.</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✦</div>
+                        <div>
+                            <div class="feature-name">Handcrafted Quality</div>
+                            <div class="feature-desc">Each piece passes through at least three artisans before it ever
+                                reaches packaging.</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📦</div>
+                        <div>
+                            <div class="feature-name">Zero-waste Packaging</div>
+                            <div class="feature-desc">Fully recyclable, minimal packaging. No plastic, no excess. Just
+                                the product.</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">♾️</div>
+                        <div>
+                            <div class="feature-name">Lifetime Guarantee</div>
+                            <div class="feature-desc">We stand behind everything we make. If something breaks, we fix or
+                                replace it. Always.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <div class="testimonial-section reveal" id="story">
+        <div class="section-tag" style="justify-content: center; color: var(--accent);">What People Say</div>
+        <blockquote>"I've never been so deliberate about what I bring into my home. Forma changed the way I think about
+            objects."</blockquote>
+        <div class="quote-author">— Maya R., Interior Designer</div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section reveal">
+        <div class="section-tag" style="justify-content: center;">Get Started</div>
+        <h2>Ready to find your<br><em>perfect piece?</em></h2>
+        <p>Browse the full collection and discover objects made to live with you — not just look good.</p>
+        <a href="#products" class="btn-primary">Explore the Collection</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <a href="#" class="logo" style="font-size: 1.1rem;">Forma</a>
+        <p>© 2025 Forma. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+            <a href="#">Instagram</a>
+        </div>
+    </footer>
+
+    <script>
+        const cursor = document.getElementById('cursor');
+        const ring = document.getElementById('cursorRing');
+        const label = document.getElementById('cursorLabel');
+
+        // Use transform: translate() for GPU-composited movement — fastest possible
+        let mx = 0, my = 0;   // real mouse
+        let rx = 0, ry = 0;   // ring lerp position
+        const LERP = 0.18;    // increased from 0.12 → snappier ring follow
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX;
+            my = e.clientY;
+            // Dot follows instantly via transform
+            cursor.style.transform = `translate(${mx - cursor.offsetWidth / 2}px, ${my - cursor.offsetHeight / 2}px)`;
+            label.style.transform = `translate(${mx + 18}px, ${my - 8}px)`;
+        }, { passive: true });
+
+        function tick() {
+            // Smooth ring lerp — fast enough to feel snappy, smooth enough to feel luxe
+            rx += (mx - rx) * LERP;
+            ry += (my - ry) * LERP;
+            ring.style.transform = `translate(${rx - ring.offsetWidth / 2}px, ${ry - ring.offsetHeight / 2}px)`;
+            requestAnimationFrame(tick);
+        }
+        tick();
+
+        // --- Hover effects ---
+
+        // Links & nav items
+        document.querySelectorAll('a, .nav-links a').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('on-link');
+                ring.classList.add('on-link');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('on-link');
+                ring.classList.remove('on-link');
+            });
+        });
+
+        // Image wrappers — expand cursor + show "View" label
+        document.querySelectorAll('.card-img-wrap, .hero-img-wrap, .feature-img').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('on-image');
+                ring.classList.add('on-image');
+                label.textContent = 'View';
+                label.classList.add('visible');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('on-image');
+                ring.classList.remove('on-image');
+                label.classList.remove('visible');
+            });
+        });
+
+        // Buttons — big circle cursor
+        document.querySelectorAll('button, .btn-primary').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('on-btn');
+                ring.classList.add('on-btn');
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('on-btn');
+                ring.classList.remove('on-btn');
+            });
+        });
+
+        // Navbar scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
+
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            // Thread weave on image hover
+        document.querySelectorAll('.card-img-wrap, .feature-img').forEach(el => {
+            el.addEventListener('mouseenter', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // create horizontal thread
+                const th = document.createElement('div');
+                th.className = 'thread-line thread-h';
+                th.style.top = y + 'px';
+                th.style.animation = 'threadShootH 0.8s ease forwards';
+                
+                // create vertical thread
+                const tv = document.createElement('div');
+                tv.className = 'thread-line thread-v';
+                tv.style.left = x + 'px';
+                tv.style.animation = 'threadShootV 0.8s ease forwards';
+                
+                el.appendChild(th);
+                el.appendChild(tv);
+                setTimeout(() => { th.remove(); tv.remove(); }, 800);
+            });
+        });
+    </script>
+</body>
+
+</html>
