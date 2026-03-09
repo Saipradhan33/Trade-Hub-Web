@@ -1,3 +1,35 @@
-generate_pages.py
-fix_pages.py
-update_animations.py
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Build folders
+build/
+dist/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
