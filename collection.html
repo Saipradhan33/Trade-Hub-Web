@@ -189,42 +189,85 @@
             height: 100%;
             position: relative;
             background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+            padding: 40px;
         }
 
-        .product-img {
+        /* Surface depth base shadow */
+        .visual-card::after {
+            content: "";
             position: absolute;
-            top: 50%;
+            bottom: 10%;
             left: 50%;
-            width: 100%;
-            height: 100%;
-            transform: translate(-50%, -50%);
-            object-fit: contain;
-            transition: opacity 2s ease-in-out, transform 2s ease-in-out;
-            /* mix-blend-mode is now set dynamically via JS for each fish */
-            filter: contrast(1.1) brightness(1.1);
-            z-index: 10;
-        }
-
-        .img-full {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-            z-index: 2;
-        }
-
-        .img-fillet {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.95);
+            transform: translateX(-50%);
+            width: 60%;
+            height: 20%;
+            background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4), transparent);
+            filter: blur(20px);
             z-index: 1;
         }
 
-        .state-fillet .img-full {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(1.05);
+        .product-img {
+            max-width: 500px;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
         }
 
-        .state-fillet .img-fillet {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+        .img-full {
+            position: relative;
+            width: auto;
+            max-width: 500px;
+            max-height: 70vh;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+            filter: contrast(1.1) brightness(1.1);
+            z-index: 2;
+        }
+
+        .fillet-layout {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .fillet-piece {
+            width: auto;
+            max-width: 280px;
+            max-height: 60vh;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.5));
+            transition: transform 0.4s ease;
+            opacity: 0;
+            pointer-events: auto;
+        }
+
+        .fillet-piece:nth-child(1) {
+            transform: rotate(-6deg);
+        }
+
+        .fillet-piece:nth-child(2) {
+            transform: rotate(6deg);
+        }
+
+        .fillet-piece:hover {
+            transform: scale(1.05) rotate(0deg) !important;
         }
 
         .product-meta {
@@ -322,8 +365,11 @@
 
         <div class="right-panel">
             <div class="visual-card" id="visualCard">
-                <img src="" class="product-img img-full" id="imgFull">
-                <img src="" class="product-img img-fillet" id="imgFillet">
+                <img src="" class="img-full product-img" id="imgFull">
+                <div class="fillet-layout" id="filletLayout">
+                    <img src="" class="fillet-piece product-img" id="filletImg1">
+                    <img src="" class="fillet-piece product-img" id="filletImg2">
+                </div>
             </div>
         </div>
     </div>
@@ -393,15 +439,20 @@
                 document.getElementById('p-nutri').innerText = fish.nutri;
 
                 document.getElementById('imgFull').src = fish.full;
-                document.getElementById('imgFillet').src = fish.fillet;
-                
+
+                // Duplicate fillet pieces for composition layout
+                document.getElementById('filletImg1').src = fish.fillet;
+                document.getElementById('filletImg2').src = fish.fillet;
+
                 // Dynamically apply the correct blend mode
                 document.getElementById('imgFull').style.mixBlendMode = fish.blend;
-                document.getElementById('imgFillet').style.mixBlendMode = fish.blend;
+                document.getElementById('filletImg1').style.mixBlendMode = fish.blend;
+                document.getElementById('filletImg2').style.mixBlendMode = fish.blend;
 
-                // Reset view to Full state for the new product
+                // Reset view to Full state cleanly for the new product load
                 showFillet = false;
-                document.getElementById('visualCard').classList.remove('state-fillet');
+                gsap.set(".img-full", { opacity: 1, scale: 1 });
+                gsap.set(".fillet-piece", { opacity: 0, scale: 0.9, y: 60 });
             };
 
             if (skipAnim) {
@@ -426,10 +477,42 @@
 
         function toggleVisualState() {
             if (isAnimating) return;
+            isAnimating = true;
             showFillet = !showFillet;
-            const card = document.getElementById('visualCard');
-            if (showFillet) card.classList.add('state-fillet');
-            else card.classList.remove('state-fillet');
+
+            if (showFillet) {
+                // Push and fade away full fish
+                gsap.to(".img-full", {
+                    opacity: 0,
+                    scale: 0.9,
+                    duration: 0.6
+                });
+
+                // Cascade food presentation arrangement
+                gsap.fromTo(".fillet-piece",
+                    { y: 60, opacity: 0, scale: 0.9 },
+                    { y: 0, opacity: 1, scale: 1, stagger: 0.15, duration: 0.8, ease: "power3.out", onComplete: () => { isAnimating = false; } }
+                );
+            } else {
+                // Reverse piece cascacde
+                gsap.to(".fillet-piece", {
+                    y: 60,
+                    opacity: 0,
+                    scale: 0.9,
+                    duration: 0.6,
+                    stagger: 0.1
+                });
+
+                // Emerge entire fish smoothly
+                gsap.to(".img-full", {
+                    opacity: 1,
+                    scale: 1,
+                    duration: 0.8,
+                    delay: 0.3,
+                    ease: "power3.out",
+                    onComplete: () => { isAnimating = false; }
+                });
+            }
         }
 
         function next() {

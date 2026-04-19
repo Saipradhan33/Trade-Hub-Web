@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ocean's Delight — Premium</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        /* --- 1. CSS VARIABLES & RESET --- */
+        :root {
+            --bg-dark: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --accent-orange: #d95d39;
+            --border-light: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. TYPOGRAPHY --- */
+        h1,
+        h2,
+        h3,
+        h4,
+        .font-oswald {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .text-gradient {
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 30%, #cfcfcf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            display: inline-block;
+        }
+
+        /* Cinematic Mask Gradient fade for huge text */
+        .fade-text {
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(180deg, #ffffff 0%, #ffffff 30%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            -webkit-mask-image: linear-gradient(to bottom,
+                    black 0%,
+                    black 45%,
+                    rgba(0, 0, 0, 0.2) 85%,
+                    transparent 100%);
+            /* Increased shadow to push text 'forward' in Z-space */
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+        }
+
+        /* --- 3. HERO SECTION --- */
+        .hero {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2rem 5%;
+            /* Restored previous image but kept lighter gradient to maintain the 'lit-up' feel */
+            background:
+                linear-gradient(to bottom, rgba(5, 5, 5, 0.1) 0%, rgba(5, 5, 5, 0.4) 50%, var(--bg-dark) 100%),
+                url('https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?q=80&w=2073&auto=format&fit=crop') center/cover no-repeat;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Vignette overlay */
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            /* Lightened vignette to allow the 'lit-up' mountain to shine through */
+            background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Fade Floor Base */
+        .hero::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(to top,
+                    #050505 0%,
+                    rgba(5, 5, 5, 0.8) 40%,
+                    transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Ensure interactive layers jump above the vignette & fade floor */
+        nav,
+        .hero-top-text,
+        .hero-bottom,
+        .categories-wrapper {
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-box {
+            border: 1px solid var(--border-light);
+            padding: 10px 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .logo-sub {
+            font-size: 0.65rem;
+            letter-spacing: 4px;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Text */
+        .hero-top-text {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 500;
+            color: var(--text-secondary);
+            max-width: 450px;
+            line-height: 1.3;
+            margin-top: 15vh;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 1rem;
+        }
+
+        .hero-bottom {
+            margin-bottom: 22vh;
+            position: relative;
+            z-index: 2;
+            /* ENFORCED LAYER for depth aligning */
+        }
+
+        .hero-headline {
+            font-size: clamp(5rem, 11vw, 11rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-desc {
+            max-width: 450px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+        }
+
+        /* --- 4. CATEGORY CARDS --- */
+        .categories-wrapper {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translate(-50%, 20%);
+            display: flex;
+            gap: 24px;
+            z-index: 3;
+        }
+
+        .cat-card {
+            width: 240px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 3rem 1.5rem 2rem;
+            text-align: center;
+            position: relative;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            /* Initial state for GSAP Emerge animation */
+            opacity: 0;
+            transform: translateY(80px) scale(0.95);
+        }
+
+        .cat-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .cat-card:hover {
+            border-color: var(--text-muted);
+            transform: translateY(-10px) scale(1.02) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .cat-card:hover::before {
+            opacity: 1;
+        }
+
+        .cat-card:hover .cat-img {
+            transform: translateX(-50%) scale(1.08);
+        }
+
+        /* Drop shadow for PNG depth */
+        .cat-img {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5));
+            transition: transform 0.4s ease;
+        }
+
+        .cat-title {
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .cat-link {
+            font-size: 0.7rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- 5. INFO & MAP SECTION --- */
+        .dark-section {
+            padding: 30vh 10% 12vh;
+            position: relative;
+            background: linear-gradient(to bottom, transparent, #050505 20%, #050505 100%);
+        }
+
+        .massive-title {
+            font-size: clamp(3rem, 8vw, 8rem);
+            line-height: 1;
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+        }
+
+        .info-p {
+            max-width: 550px;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .info-link {
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .info-link:hover {
+            border-color: var(--text-primary);
+        }
+
+        /* Map */
+        .map-wrapper {
+            margin: 15vh auto 5vh;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .map-img {
+            width: 100%;
+            opacity: 0.35;
+            filter: invert(1) contrast(1.2);
+        }
+
+        .map-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #d95d39, 0 0 30px rgba(217, 93, 57, 0.6);
+        }
+
+        .map-dot::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid #d95d39;
+            animation: ripple 2s infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        /* --- 6. FOOTER --- */
+        .waves-footer {
+            height: 50vh;
+            background: linear-gradient(to top, rgba(5, 5, 5, 0.4) 0%, rgba(5, 5, 5, 1) 100%),
+                url('https://images.unsplash.com/photo-1518837695005-2083093ee35b?q=80&w=2070&auto=format&fit=crop') center/bottom cover no-repeat;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8vh;
+            filter: grayscale(100%);
+        }
+
+        .footer-logos {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            opacity: 0.6;
+        }
+
+        .footer-logo-text {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+            border: 1px solid var(--border-light);
+            padding: 8px 20px;
+            text-transform: uppercase;
+        }
+
+        .reveal-element {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="hero" id="hero">
+        <nav>
+            <a href="seafood.html" style="text-decoration:none; color:white;">
+                <div class="logo-box">
+                    OCEAN'S DELIGHT<br>
+                    <div class="logo-sub">PREMIUM SEAFOOD</div>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="seafood.html">Products</a>
+                <a href="#">Who We Are</a>
+                <a href="#">Our Fleet</a>
+                <a href="#">Contact</a>
+            </div>
+        </nav>
+
+        <div class="hero-top-text">
+            WE ARE SHIPOWNERS, PRODUCERS AND DISTRIBUTORS.
+        </div>
+
+        <div class="hero-bottom">
+            <h1 class="hero-headline fade-text">THREE OCEANS<br>SEAFOOD</h1>
+            <div class="hero-desc font-oswald">
+                WE ENSURE TRACEABILITY IN OUR PRODUCTS FROM CATCH TO THE FINAL CONSUMER.
+            </div>
+        </div>
+
+        <div class="categories-wrapper" id="categoriesWrapper">
+            <a href="collection.html" class="cat-card">
+                <img src="./assets/prawn.png" alt="Shellfish" class="cat-img" onerror="this.src='./assets/prawn.jpg'">
+                <h3 class="cat-title">Shellfish</h3>
+                <div class="cat-link">View Products &rarr;</div>
+            </a>
+            <a href="collection.html" class="cat-card">
+                <img src="./assets/salmon_fillet.png" alt="Fish" class="cat-img"
+                    onerror="this.src='./assets/salmon.jpeg'">
+                <h3 class="cat-title">Fish</h3>
+                <div class="cat-link">View Products &rarr;</div>
+            </a>
+            <a href="collection.html" class="cat-card">
+                <img src="./assets/lobster.png" alt="Cephalopods" class="cat-img"
+                    onerror="this.src='./assets/lobster.jpg'">
+                <h3 class="cat-title">Cephalopods</h3>
+                <div class="cat-link">View Products &rarr;</div>
+            </a>
+        </div>
+    </section>
+
+    <section class="dark-section">
+        <h2 class="massive-title fade-text reveal-element">ORIGIN<br>& QUALITY</h2>
+        <div class="info-p reveal-element">
+            We make union our strength to guarantee quality, traceability, and availability of our products. From origin
+            to the final consumer, we commercialize more than 70 different varieties of fish and seafood in over 30
+            countries.
+            <br>
+            <a href="#" class="info-link">Who We Are &rarr;</a>
+        </div>
+
+        <div class="map-wrapper reveal-element" id="dotMap">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg"
+                class="map-img" alt="World Map">
+            <div class="map-dot" style="top: 30%; left: 22%;"></div>
+            <div class="map-dot" style="top: 45%; left: 29%;"></div>
+            <div class="map-dot" style="top: 60%; left: 32%;"></div>
+            <div class="map-dot" style="top: 35%; left: 47%;"></div>
+            <div class="map-dot" style="top: 25%; left: 53%;"></div>
+            <div class="map-dot" style="top: 30%; left: 63%;"></div>
+            <div class="map-dot" style="top: 42%; left: 65%;"></div>
+            <div class="map-dot" style="top: 55%; left: 75%;"></div>
+            <div class="map-dot" style="top: 70%; left: 82%;"></div>
+        </div>
+    </section>
+
+    <section class="waves-footer">
+        <div class="footer-logos">
+            <div class="footer-logo-text" style="font-size: 1rem;">SAKU-60&deg;</div>
+            <div class="footer-logo-text">OCEAN'S DELIGHT</div>
+            <div class="footer-logo-text" style="font-size: 1rem; border:none;">MARINA<br>MARCO</div>
+        </div>
+    </section>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Text Parallax Depth Enhancement
+        gsap.to(".hero-headline", {
+            y: 50,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+
+        // Background Hero scrub
+        gsap.to(".hero", {
+            backgroundPosition: "50% 80%",
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: 1
+            }
+        });
+
+        // Cards Emerge out of the fade
+        gsap.to(".cat-card", {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 1,
+            stagger: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top 40%",
+                toggleActions: "play none none reverse"
+            },
+            onComplete: function () {
+                // Post-emerge subtle float
+                gsap.to(".cat-card", {
+                    y: -10,
+                    duration: 2,
+                    ease: "sine.inOut",
+                    yoyo: true,
+                    repeat: -1,
+                    stagger: 0.2
+                });
+            }
+        });
+
+        // Grouped elegant scrub reveals
+        gsap.set(".reveal-element", { autoAlpha: 0, y: 30 });
+        ScrollTrigger.batch(".reveal-element", {
+            onEnter: batch => gsap.to(batch, {
+                autoAlpha: 1,
+                y: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power2.out"
+            }),
+            start: "top 85%"
+        });
+    </script>
+</body>
+
+</html>

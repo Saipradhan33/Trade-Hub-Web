@@ -432,7 +432,7 @@
             z-index: 2;
         }
 
-        .card-img-v2 {
+        .product-img {
             width: 100%;
             aspect-ratio: 4/3;
             object-fit: contain;
@@ -441,7 +441,7 @@
             transition: transform 0.4s ease;
         }
 
-        .product-card-v2:hover .card-img-v2 {
+        .product-card-v2:hover .product-img {
             transform: scale(1.1) rotate(-5deg);
         }
 
@@ -728,7 +728,7 @@
             z-index: 2;
         }
 
-        .card-img-v2 {
+        .product-img {
             width: 100%;
             aspect-ratio: 4/3;
             object-fit: contain;
@@ -737,7 +737,7 @@
             transition: transform 0.4s ease;
         }
 
-        .product-card-v2:hover .card-img-v2 {
+        .product-card-v2:hover .product-img {
             transform: scale(1.1) rotate(-5deg);
         }
 
@@ -851,25 +851,26 @@
             grid-row: span 2;
         }
 
-        .card-img {
+        .product-img {
             width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
+            max-width: 420px;
+            object-fit: contain;
             display: block;
+            margin: auto;
             transition: transform 0.5s ease;
-            background: var(--border);
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
         }
 
-        .product-card.featured .card-img {
+        .product-card.featured .product-img {
             aspect-ratio: 3/4;
         }
 
-        .product-card:hover .card-img {
+        .product-card:hover .product-img {
             transform: scale(1.04);
         }
 
         .card-img-wrap {
-            overflow: hidden;
+            overflow: visible;
             position: relative;
         }
 
@@ -1264,6 +1265,52 @@
                 border-width: 1px;
             }
         }
+
+        /* Standardized Action Buttons */
+        .btn-primary,
+        .btn-ghost {
+            font-family: 'Cormorant Garamond', serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: none;
+            /* Inherit custom cursor */
+        }
+
+        .btn-primary {
+            background-color: #1e3a8a;
+            color: #ffffff;
+            border: 1px solid #1e3a8a;
+        }
+
+        .btn-primary:focus {
+            color: #ffffff;
+            /* Override any universal a tag color */
+        }
+
+        .btn-primary:hover {
+            background-color: #ffffff;
+            color: #1e3a8a;
+        }
+
+        .btn-ghost {
+            background-color: #ffffff;
+            color: #1e3a8a;
+            border: 1px solid #1e3a8a;
+        }
+
+        .btn-ghost:hover {
+            background-color: #1e3a8a;
+            color: #ffffff;
+        }
     </style>
 </head>
 
@@ -1303,8 +1350,8 @@
                 </h2>
                 <p class="hero-desc">Peça já o seu e complete a sua dieta com o melhor que o oceano tem a oferecer.</p>
                 <div class="hero-actions" style="margin-top: 3rem; display: flex; gap: 1.5rem;">
-                    <a href="collection.html" class="btn-primary" style="background: #1e3a8a;">Explore Collection</a>
-                    <a href="collection.html" class="btn-ghost">View Details</a>
+                    <a href="collection.html" class="btn-primary">Explore Collection</a>
+                    <a href="details.html" class="btn-ghost">View Details</a>
                 </div>
             </div>
 
@@ -1393,7 +1440,7 @@
             <h2 style="font-size: clamp(2.5rem, 4vw, 4rem); line-height: 1.1;">Fresh From the <br><em>Ocean to Your
                     Doorstep</em></h2>
             <div style="margin-top: 2.5rem;">
-                <a href="#" class="btn-primary" style="background: #1e3a8a;">Shop Seafood</a>
+                <a href="#" class="btn-primary">Shop Seafood</a>
             </div>
         </div>
 
@@ -1401,7 +1448,7 @@
             <!-- Product 1 -->
             <div class="product-card-v2">
                 <div class="card-discount">-20%</div>
-                <img src="./salmon_hero_1776486792065.png" alt="Salmon Fillet" class="card-img-v2">
+                <img src="./salmon_hero_1776486792065.png" alt="Salmon Fillet" class="product-img">
                 <div class="card-info-v2">
                     <div>
                         <div class="card-name-v2">Salmon Fillet</div>
@@ -1421,7 +1468,7 @@
             <!-- Product 2 -->
             <div class="product-card-v2">
                 <div class="card-discount">-20%</div>
-                <img src="./shrimp_cinematic_1776486832613.png" alt="Shrimp" class="card-img-v2">
+                <img src="./shrimp_cinematic_1776486832613.png" alt="Shrimp" class="product-img">
                 <div class="card-info-v2">
                     <div>
                         <div class="card-name-v2">Prime Shrimp</div>

@@ -455,25 +455,26 @@
             grid-row: span 2;
         }
 
-        .card-img {
+        .product-img {
             width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
+            max-width: 420px;
+            object-fit: contain;
             display: block;
+            margin: auto;
             transition: transform 0.5s ease;
-            background: var(--border);
+            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
         }
 
-        .product-card.featured .card-img {
+        .product-card.featured .product-img {
             aspect-ratio: 3/4;
         }
 
-        .product-card:hover .card-img {
+        .product-card:hover .product-img {
             transform: scale(1.04);
         }
 
         .card-img-wrap {
-            overflow: hidden;
+            overflow: visible;
             position: relative;
         }
 
