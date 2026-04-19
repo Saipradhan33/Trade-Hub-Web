@@ -8,6 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         *,
         *::before,
@@ -18,13 +19,14 @@
         }
 
         :root {
-            --bg: #d6e4ed;
+            --bg: #f8fafc;
             --surface: #ffffff;
-            --text: #14181a;
-            --muted: #788b99;
-            --accent: #4a7c99;
-            --border: #dbe4e8;
-            --card-bg: #f8fafc;
+            --text: #0a0c0d;
+            --muted: #64748b;
+            --accent: #2563eb;
+            --border: #e2e8f0;
+            --card-bg: #ffffff;
+            --ocean-blue: #1e40af;
         }
 
         html {
@@ -193,198 +195,592 @@
             color: #fff !important;
         }
 
-        /* Hero */
-        .hero {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            padding: 8rem 4rem 4rem;
-            gap: 4rem;
-        }
-
-        .hero-left {
-            padding-top: 2rem;
-        }
-
-        .hero-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.72rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1.8rem;
-            opacity: 0;
-            animation: fadeUp 0.8s 0.2s forwards;
-        }
-
-        .hero-tag::before {
-            content: '';
-            display: inline-block;
-            width: 24px;
-            height: 1px;
-            background: var(--accent);
-        }
-
-        h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 5vw, 5rem);
-            font-weight: 300;
-            line-height: 1.08;
-            letter-spacing: -0.01em;
-            color: var(--text);
-            opacity: 0;
-            animation: fadeUp 0.8s 0.35s forwards;
-        }
-
-        h1 em {
-            font-style: italic;
-            color: var(--accent);
-        }
-
-        .hero-desc {
-            margin-top: 1.8rem;
-            font-size: 0.95rem;
-            color: var(--muted);
-            line-height: 1.8;
-            max-width: 400px;
-            opacity: 0;
-            animation: fadeUp 0.8s 0.5s forwards;
-        }
-
-        .hero-actions {
-            margin-top: 2.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            opacity: 0;
-            animation: fadeUp 0.8s 0.65s forwards;
-        }
-
-        .btn-primary {
-            background: var(--text);
-            color: var(--bg);
-            padding: 0.85rem 2rem;
-            border: none;
-            border-radius: 2px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            cursor: none;
-            transition: background 0.2s, transform 0.2s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent);
-            transform: translateY(-1px);
-        }
-
-        .btn-ghost {
-            font-size: 0.8rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--muted);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            transition: color 0.2s, gap 0.2s;
-        }
-
-        .btn-ghost:hover {
-            color: var(--text);
-            gap: 0.7rem;
-        }
-
-        .hero-right {
+        /* Categorical Showcase (Image 2 & 3 Style) */
+        .showcase-container {
             position: relative;
-            opacity: 0;
-            animation: fadeIn 1s 0.4s forwards;
-        }
-
-        .hero-img-wrap {
-            aspect-ratio: 4/5;
-            background: var(--border);
-            border-radius: 4px;
             overflow: hidden;
-            position: relative;
         }
 
-        .hero-img-wrap img {
+        .showcase-section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 0 5vw;
+        }
+
+        /* Salmon Section (Image 2 style) */
+        .section-salmon {
+            background-color: #f0f4f8;
+            background-image: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
+        }
+
+        .salmon-content {
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .salmon-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.5rem;
+            line-height: 1;
+            color: #1e3a8a;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .salmon-title span {
+            display: block;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .salmon-price-badge {
+            position: absolute;
+            top: 30%;
+            right: 15%;
+            background: #2563eb;
+            color: white;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+            animation: rotateSlow 20s linear infinite;
+            z-index: 3;
+        }
+
+        @keyframes rotateSlow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .salmon-price-badge div {
+            transform: rotate(calc(var(--rot, 0deg) * -1));
+        }
+
+        .salmon-image {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-40%);
+            width: 45vw;
+            z-index: 1;
+        }
+
+        .salmon-image img {
+            width: 100%;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.15));
+        }
+
+        .wavy-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20vh;
+            background: #1e40af;
+            clip-path: ellipse(100% 100% at 50% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw 2rem;
+            color: white;
+        }
+
+        /* Shrimp Section (Image 3 style) */
+        .section-shrimp {
+            background: #0a0c0d;
+            color: white;
+        }
+
+        .shrimp-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
-            transition: transform 0.6s ease;
+            opacity: 0.6;
         }
 
-        .hero-img-wrap:hover img {
-            transform: scale(1.03);
+        .shrimp-content {
+            z-index: 2;
+            width: 100%;
         }
 
-        .hero-badge {
+        .shrimp-tagline {
+            font-size: 4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+
+        .shrimp-big-text {
+            font-size: 15vw;
+            font-weight: 900;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+            color: transparent;
             position: absolute;
-            bottom: -1.5rem;
-            left: -2rem;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 1rem 1.4rem;
-            border-radius: 4px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-        }
-
-        .badge-num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
-            font-weight: 300;
-            color: var(--accent);
+            bottom: 10%;
+            left: 5vw;
+            pointer-events: none;
             line-height: 1;
         }
 
-        .badge-label {
-            font-size: 0.7rem;
-            color: var(--muted);
-            margin-top: 0.2rem;
-            letter-spacing: 0.05em;
+        /* Dynamic Scroll Template (Pinterest/Video style) */
+        .horizontal-scroll-container {
+            height: 300vh;
+            /* Control the scroll length */
+            position: relative;
+            background: #f8fafc;
         }
 
-        /* Stats strip */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            margin: 0 4rem;
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
         }
 
-        .stat {
-            padding: 2rem;
+        .scroll-track {
+            display: flex;
+            width: 300vw;
+            height: 100%;
+        }
+
+        .scroll-slide {
+            width: 100vw;
+            height: 100%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .floating-fish {
+            position: absolute;
+            width: 500px;
+            z-index: 10;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        .slide-content {
             text-align: center;
-            border-right: 1px solid var(--border);
+            z-index: 5;
         }
 
-        .stat:last-child {
-            border-right: none;
-        }
-
-        .stat-num {
+        .slide-content h3 {
             font-family: 'Cormorant Garamond', serif;
+            font-size: 8rem;
+            opacity: 0.1;
+            text-transform: uppercase;
+        }
+
+        /* Product Grid (Image 1 style) */
+        .section-products {
+            padding: 10rem 5vw;
+            background: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card-v2 {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .product-card-v2:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-discount {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+        }
+
+        .card-img-v2 {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: contain;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+            transition: transform 0.4s ease;
+        }
+
+        .product-card-v2:hover .card-img-v2 {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card-info-v2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-name-v2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .card-price-v2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .card-old-price {
+            font-size: 1rem;
+            text-decoration: line-through;
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
+
+        .add-to-cart-v2 {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart-v2:hover {
+            background: #f1f5f9;
+        }
+
+        /* Categorical Showcase (Image 2 & 3 Style) */
+        .showcase-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .showcase-section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 0 5vw;
+        }
+
+        /* Salmon Section (Image 2 style) */
+        .section-salmon {
+            background-color: #f0f4f8;
+            background-image: radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
+        }
+
+        .salmon-content {
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .salmon-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 4.5rem;
+            line-height: 1;
+            color: #1e3a8a;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        .salmon-title span {
+            display: block;
             font-size: 2.5rem;
             font-weight: 300;
-            color: var(--text);
         }
 
-        .stat-label {
-            font-size: 0.72rem;
-            color: var(--muted);
-            letter-spacing: 0.1em;
+        .salmon-price-badge {
+            position: absolute;
+            top: 30%;
+            right: 15%;
+            background: #2563eb;
+            color: white;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+            animation: rotateSlow 20s linear infinite;
+            z-index: 3;
+        }
+
+        @keyframes rotateSlow {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .salmon-price-badge div {
+            transform: rotate(calc(var(--rot, 0deg) * -1));
+        }
+
+        .salmon-image {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-40%);
+            width: 45vw;
+            z-index: 1;
+        }
+
+        .salmon-image img {
+            width: 100%;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.15));
+        }
+
+        .wavy-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20vh;
+            background: #1e40af;
+            clip-path: ellipse(100% 100% at 50% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw 2rem;
+            color: white;
+        }
+
+        /* Shrimp Section (Image 3 style) */
+        .section-shrimp {
+            background: #0a0c0d;
+            color: white;
+        }
+
+        .shrimp-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .shrimp-content {
+            z-index: 2;
+            width: 100%;
+        }
+
+        .shrimp-tagline {
+            font-size: 4rem;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-top: 0.3rem;
+            letter-spacing: -2px;
+            line-height: 0.9;
+        }
+
+        .shrimp-big-text {
+            font-size: 15vw;
+            font-weight: 900;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+            color: transparent;
+            position: absolute;
+            bottom: 10%;
+            left: 5vw;
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        /* Dynamic Scroll Template (Pinterest/Video style) */
+        .horizontal-scroll-container {
+            height: 300vh;
+            /* Control the scroll length */
+            position: relative;
+            background: #f8fafc;
+        }
+
+        .sticky-wrapper {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .scroll-track {
+            display: flex;
+            width: 300vw;
+            height: 100%;
+        }
+
+        .scroll-slide {
+            width: 100vw;
+            height: 100%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .floating-fish {
+            position: absolute;
+            width: 250px;
+            /* Reduced size to prevent it from being too big */
+            z-index: 10;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            mix-blend-mode: multiply;
+            /* Blends away the white/light parts of the fake checkerboard */
+            filter: contrast(1.1);
+        }
+
+        .slide-content {
+            text-align: center;
+            z-index: 5;
+        }
+
+        .slide-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 8rem;
+            opacity: 0.1;
+            text-transform: uppercase;
+        }
+
+        /* Product Grid (Image 1 style) */
+        .section-products {
+            padding: 10rem 5vw;
+            background: white;
+        }
+
+        .products-grid-v2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card-v2 {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .product-card-v2:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-discount {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+        }
+
+        .card-img-v2 {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: contain;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+            transition: transform 0.4s ease;
+        }
+
+        .product-card-v2:hover .card-img-v2 {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card-info-v2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-name-v2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .card-price-v2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .card-old-price {
+            font-size: 1rem;
+            text-decoration: line-through;
+            color: #94a3b8;
+            margin-left: 0.5rem;
+        }
+
+        .add-to-cart-v2 {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-to-cart-v2:hover {
+            background: #f1f5f9;
         }
 
         /* Section styles */
@@ -794,12 +1190,13 @@
                 text-align: center;
             }
         }
-    
+
         /* Dropdown */
         .dropdown {
             position: relative;
             display: inline-block;
         }
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -808,19 +1205,21 @@
             transform: translateX(-50%) translateY(10px);
             background-color: var(--surface);
             min-width: 200px;
-            box-shadow: 0px 8px 24px 0px rgba(0,0,0,0.06);
+            box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.06);
             z-index: 101;
             border-radius: 4px;
             border: 1px solid var(--border);
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .dropdown:hover .dropdown-content {
             display: flex;
             flex-direction: column;
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
         .dropdown-content a {
             color: var(--text) !important;
             padding: 12px 16px;
@@ -829,16 +1228,19 @@
             font-size: 0.75rem;
             transition: background 0.2s, color 0.2s !important;
         }
+
         .dropdown-content a:hover {
             background-color: var(--card-bg) !important;
             color: var(--accent) !important;
         }
 
-            /* Water Splash Animation */
-        .card-img-wrap, .feature-img {
+        /* Water Splash Animation */
+        .card-img-wrap,
+        .feature-img {
             position: relative;
             overflow: hidden;
         }
+
         .splash-particle {
             position: absolute;
             border: 2px solid rgba(255, 255, 255, 0.8);
@@ -848,9 +1250,19 @@
             opacity: 0;
             z-index: 20;
         }
+
         @keyframes splash {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; border-width: 4px; }
-            100% { transform: translate(-50%, -50%) scale(3); opacity: 0; border-width: 1px; }
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0.8;
+                border-width: 4px;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(3);
+                opacity: 0;
+                border-width: 1px;
+            }
         }
     </style>
 </head>
@@ -879,85 +1291,152 @@
         </ul>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-left">
-            <div class="hero-tag">Ocean Fresh 2025</div>
-            <h1>Sustainably sourced<br><em>from the deep</em><br>blue sea</h1>
-            <p class="hero-desc">Premium quality sea food, caught daily and delivered fresh to maintain the highest standards of taste and nutrition.</p>
-            <div class="hero-actions">
-                <a href="#products" class="btn-primary">Explore Collection</a>
-                <a href="#story" class="btn-ghost">Our Story →</a>
+    <!-- Showcase Section (Image 2 & 3 Mix) -->
+    <div class="showcase-container">
+        <!-- Salmon Section (Image 2 Inspired) -->
+        <section class="showcase-section section-salmon">
+            <div class="salmon-content" data-aos="fade-right">
+                <p class="section-tag" style="margin-bottom: 1rem;">Premium Collection</p>
+                <h2 class="salmon-title">
+                    <span>Querendo aquele</span>
+                    Salmão fresquinho?
+                </h2>
+                <p class="hero-desc">Peça já o seu e complete a sua dieta com o melhor que o oceano tem a oferecer.</p>
+                <div class="hero-actions" style="margin-top: 3rem; display: flex; gap: 1.5rem;">
+                    <a href="collection.html" class="btn-primary" style="background: #1e3a8a;">Explore Collection</a>
+                    <a href="collection.html" class="btn-ghost">View Details</a>
+                </div>
             </div>
-        </div>
-        <div class="hero-right">
-            <div class="hero-img-wrap">
-                <div class="img-placeholder dark">🖼</div>
-            </div>
-            <div class="hero-badge">
-                <div class="badge-num">48h</div>
-                <div class="badge-label">From Ocean to Table</div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Stats -->
-    <div class="stats reveal">
-        <div class="stat">
-            <div class="stat-num">12yr</div>
-            <div class="stat-label">Of Craftsmanship</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num">98%</div>
-            <div class="stat-label">Customer Satisfaction</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num">50+</div>
-            <div class="stat-label">Countries Reached</div>
+            <div class="salmon-price-badge">
+                <div style="font-size: 0.8rem; opacity: 0.8;">FILÉ DE</div>
+                <div style="font-size: 1.2rem; font-weight: 700;">SALMÃO</div>
+                <div style="font-size: 2.5rem; font-weight: 800; line-height: 1;">R$39<span
+                        style="font-size: 1rem;">,90</span></div>
+                <div style="font-size: 0.7rem; letter-spacing: 1px;">500GR</div>
+            </div>
+
+            <div class="salmon-image">
+                <img src="./salmon_hero_1776486792065.png" alt="Fresh Salmon">
+            </div>
+
+            <div class="wavy-footer">
+                <div style="display: flex; gap: 2rem;">
+                    <span style="font-size: 0.7rem; letter-spacing: 2px;">INSTAGRAM</span>
+                    <span style="font-size: 0.7rem; letter-spacing: 2px;">FACEBOOK</span>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.2rem; font-weight: 600;">19 9.9999-9999</div>
+                    <div style="font-size: 0.7rem; opacity: 0.7;">R. BATISTA MANOEL, 1985</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shrimps Section (Image 3 Inspired) -->
+        <section class="showcase-section section-shrimp">
+            <img src="./shrimp_cinematic_1776486832613.png" alt="Fishing Boat" class="shrimp-bg">
+            <div class="shrimp-content">
+                <p class="section-tag" style="color: white; opacity: 0.8; margin-bottom: 1rem;">Global Export Quality
+                </p>
+                <h2 class="shrimp-tagline">
+                    Only Prime<br>
+                    Catch Goes<br>
+                    <span style="color: #2563eb;">GLOBAL.</span>
+                </h2>
+            </div>
+            <div class="shrimp-big-text">SHRIMPS</div>
+
+            <div class="wavy-footer"
+                style="background: transparent; border-top: 1px solid rgba(255,255,255,0.1); clip-path: none; height: 10vh;">
+                <div style="display: flex; gap: 2rem; align-items: center;">
+                    <span style="font-size: 0.8rem;">+968 990 31110</span>
+                    <span style="font-size: 0.8rem;">info@sourceintquality.com</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.8rem; letter-spacing: 2px;">FOLLOW US</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dynamic Automated Scrollable Template (Pinterest/Video style) -->
+    <div class="horizontal-scroll-container" id="scrollContainer">
+        <div class="sticky-wrapper">
+            <img src="./assets/swimming_fish2.png" alt="Swimming Fish" class="floating-fish" id="floatingFish">
+            <div class="scroll-track" id="scrollTrack">
+                <div class="scroll-slide" style="background: #f1f5f9;">
+                    <div class="slide-content">
+                        <h3>Ocean</h3>
+                        <p style="font-size: 1.5rem; color: #64748b;">Discover the depth of flavor</p>
+                    </div>
+                </div>
+                <div class="scroll-slide" style="background: #e2e8f0;">
+                    <div class="slide-content">
+                        <h3>Fresh</h3>
+                        <p style="font-size: 1.5rem; color: #475569;">Caught daily, delivered fresh</p>
+                    </div>
+                </div>
+                <div class="scroll-slide" style="background: #cbd5e1;">
+                    <div class="slide-content">
+                        <h3>Pure</h3>
+                        <p style="font-size: 1.5rem; color: #334155;">Sustainable and organic source</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Products -->
-    <section id="products">
-        <div class="products-header reveal">
-            <div>
-                <div class="section-tag">Sea Food Market</div>
-                <h2>Fresh catch of<br><em>the day</em></h2>
+    <!-- Lower End: Product Grid (Image 1 Inspired) -->
+    <section class="section-products" id="products">
+        <div style="text-align: center; margin-bottom: 5rem;">
+            <p class="section-tag" style="justify-content: center; margin-bottom: 1rem;">Daily Fresh</p>
+            <h2 style="font-size: clamp(2.5rem, 4vw, 4rem); line-height: 1.1;">Fresh From the <br><em>Ocean to Your
+                    Doorstep</em></h2>
+            <div style="margin-top: 2.5rem;">
+                <a href="#" class="btn-primary" style="background: #1e3a8a;">Shop Seafood</a>
             </div>
         </div>
 
-        <div class="products-grid reveal" id="seafood-grid">
+        <div class="products-grid-v2">
+            <!-- Product 1 -->
+            <div class="product-card-v2">
+                <div class="card-discount">-20%</div>
+                <img src="./salmon_hero_1776486792065.png" alt="Salmon Fillet" class="card-img-v2">
+                <div class="card-info-v2">
+                    <div>
+                        <div class="card-name-v2">Salmon Fillet</div>
+                        <div class="card-price-v2">$12.99 <span class="card-old-price">$15.99</span></div>
+                    </div>
+                    <div class="add-to-cart-v2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                            <path d="M3 6h18" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
 
-            <a href="#" class="product-card" style="text-decoration: none;">
-                <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #dbe4e8; color: #14181a;">🦐</div>
-                    <span class="card-tag">Fresh</span>
+            <!-- Product 2 -->
+            <div class="product-card-v2">
+                <div class="card-discount">-20%</div>
+                <img src="./shrimp_cinematic_1776486832613.png" alt="Shrimp" class="card-img-v2">
+                <div class="card-info-v2">
+                    <div>
+                        <div class="card-name-v2">Prime Shrimp</div>
+                        <div class="card-price-v2">18.99</div>
+                    </div>
+                    <div class="add-to-cart-v2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                            <path d="M3 6h18" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="card-name">Jumbo King Prawns</div>
-                    <div class="card-desc">Wild-caught and delivered fresh daily. Perfect for grilling or scampi.</div>
-                </div>
-            </a>
-            <a href="#" class="product-card" style="text-decoration: none;">
-                <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #dbe4e8; color: #14181a;">🐠</div>
-                    <span class="card-tag">Bestseller</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-name">Atlantic Salmon Fillet</div>
-                    <div class="card-desc">Responsibly farmed in cold ocean waters. Rich in Omega-3 and flavor.</div>
-                </div>
-            </a>
-            <a href="#" class="product-card" style="text-decoration: none;">
-                <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #dbe4e8; color: #14181a;">🐟</div>
-                    <span class="card-tag">Premium</span>
-                </div>
-                <div class="card-body">
-                    <div class="card-name">Yellowfin Tuna Steaks</div>
-                    <div class="card-desc">Sustainably line-caught prime cuts, ideal for searing or sashimi.</div>
-                </div>
-            </a>
+            </div>
         </div>
     </section>
 
@@ -1022,7 +1501,7 @@
         <div class="section-tag" style="justify-content: center;">Get Started</div>
         <h2>Ready to find your<br><em>perfect piece?</em></h2>
         <p>Browse the full collection and discover objects made to live with you — not just look good.</p>
-        <a href="#products" class="btn-primary">Explore the Collection</a>
+        <a href="collection.html" class="btn-primary">Explore the Collection</a>
     </div>
 
     <!-- Footer -->
@@ -1037,7 +1516,14 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
         const cursor = document.getElementById('cursor');
         const ring = document.getElementById('cursorRing');
         const label = document.getElementById('cursorLabel');
@@ -1109,6 +1595,27 @@
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 20);
+
+            // Dynamic Scroll Template Logic
+            const container = document.getElementById('scrollContainer');
+            const track = document.getElementById('scrollTrack');
+            const fish = document.getElementById('floatingFish');
+
+            if (container) {
+                const rect = container.getBoundingClientRect();
+                const scrollProgress = Math.max(0, Math.min(1, -rect.top / (rect.height - window.innerHeight)));
+
+                // Horizontal Move
+                const moveX = scrollProgress * 200; // Move 200vw
+                if (track) track.style.transform = `translateX(-${moveX}vw)`;
+
+                // Fish "Swimming" Animation
+                const fishX = scrollProgress * (window.innerWidth + 500) - 500;
+                const fishY = Math.sin(scrollProgress * Math.PI * 4) * 100; // Wave motion
+                const fishRot = Math.cos(scrollProgress * Math.PI * 4) * 20; // Rotation motion
+
+                if (fish) fish.style.transform = `translate(${fishX}px, calc(50vh + ${fishY}px)) rotate(${fishRot}deg)`;
+            }
         }, { passive: true });
 
         // Scroll reveal
@@ -1122,13 +1629,13 @@
         }, { threshold: 0.12 });
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-            // Splash animation on image hover
+        // Splash animation on image hover
         document.querySelectorAll('.card-img-wrap, .feature-img').forEach(el => {
             el.addEventListener('mouseenter', (e) => {
                 const rect = el.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 const splash = document.createElement('div');
                 splash.classList.add('splash-particle');
                 splash.style.left = x + 'px';
@@ -1136,7 +1643,7 @@
                 splash.style.width = '60px';
                 splash.style.height = '60px';
                 splash.style.animation = 'splash 0.6s ease-out forwards';
-                
+
                 el.appendChild(splash);
                 setTimeout(() => splash.remove(), 600);
             });

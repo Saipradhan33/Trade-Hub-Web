@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fish Collection — Ocean's Delight</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #f4f1ea;
+            --bg-ocean: #004d7a;
+            --text-dark: #1a1a1a;
+            --accent-orange: #d95d39;
+            --accent-blue: #0077b6;
+            --muted: #8c8c8c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
+            overflow: hidden;
+        }
+
+        .main-container {
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            position: relative;
+            background: var(--bg-cream);
+        }
+
+        /* Branding & Navigation */
+        .branding {
+            position: absolute;
+            top: 2.5rem;
+            left: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .logo-symbol {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-orange);
+            clip-path: polygon(10% 25%, 35% 25%, 35% 0%, 65% 0%, 65% 25%, 90% 25%, 90% 50%, 65% 50%, 65% 100%, 35% 100%, 35% 50%, 10% 50%);
+        }
+
+        .logo-text {
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: var(--bg-ocean);
+        }
+
+        .menu-btn {
+            position: absolute;
+            top: 2.5rem;
+            right: 3rem;
+            background: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 600;
+            color: var(--bg-ocean);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(244, 241, 234, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        body.menu-open .menu-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: right;
+        }
+
+        .menu-links a {
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--bg-ocean);
+            text-decoration: none;
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -2px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .menu-links a:hover {
+            color: var(--accent-orange);
+            transform: translateX(-20px);
+        }
+
+        /* Panels */
+        .left-panel {
+            flex: 1;
+            padding-left: 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .product-index {
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.04);
+            margin-bottom: -1rem;
+        }
+
+        .product-tagline {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            color: var(--accent-orange);
+            font-style: italic;
+            margin-bottom: -0.5rem;
+        }
+
+        .product-name {
+            font-size: 9vw;
+            font-weight: 900;
+            color: var(--bg-ocean);
+            text-transform: uppercase;
+            line-height: 0.85;
+            letter-spacing: -2px;
+        }
+
+        .product-desc {
+            margin-top: 2.5rem;
+            max-width: 440px;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #4b5563;
+        }
+
+        .right-panel {
+            flex: 1.2;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Visual Card (The part that changes) */
+        .visual-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: transparent;
+        }
+
+        .product-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
+            transition: opacity 2s ease-in-out, transform 2s ease-in-out;
+            /* mix-blend-mode is now set dynamically via JS for each fish */
+            filter: contrast(1.1) brightness(1.1);
+            z-index: 10;
+        }
+
+        .img-full {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            z-index: 2;
+        }
+
+        .img-fillet {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.95);
+            z-index: 1;
+        }
+
+        .state-fillet .img-full {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .state-fillet .img-fillet {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .product-meta {
+            display: flex;
+            gap: 4rem;
+            margin-top: 3.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .meta-item span {
+            display: block;
+            color: var(--accent-orange);
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            position: absolute;
+            bottom: 4rem;
+            right: 4rem;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg-ocean);
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .nav-btn:hover {
+            color: var(--accent-orange);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 1024px) {
+            .product-name {
+                font-size: 15vw;
+            }
+
+            .right-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-links">
+            <a href="seafood.html">Home</a>
+            <a href="#">About</a>
+            <a href="seafood.html#products">Products</a>
+            <a href="#">Contact</a>
+        </div>
+    </div>
+
+    <div class="branding">
+        <div class="logo-symbol"></div>
+        <div class="logo-text">Ocean's Delight</div>
+    </div>
+
+    <div class="menu-btn" id="menuBtn" onclick="toggleMenu()">+ MENU</div>
+
+    <div class="main-container">
+        <div class="left-panel">
+            <div id="content-bundle">
+                <div class="product-index" id="p-idx"></div>
+                <div class="product-tagline" id="p-tag"></div>
+                <div class="product-name" id="p-name"></div>
+                <p class="product-desc" id="p-desc"></p>
+                <div class="product-meta">
+                    <div class="meta-item">Size <span id="p-size"></span></div>
+                    <div class="meta-item">Weight <span id="p-weight"></span></div>
+                    <div class="meta-item">Nutra <span id="p-nutri"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="visual-card" id="visualCard">
+                <img src="" class="product-img img-full" id="imgFull">
+                <img src="" class="product-img img-fillet" id="imgFillet">
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <div class="nav-btn" onclick="prev()">←</div>
+        <div class="nav-btn" onclick="next()">→</div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        const collection = [
+            {
+                idx: "01",
+                tag: "Atlantic",
+                name: "Salmon",
+                desc: "Our Atlantic Salmon is renowned for its rich flavor and tender texture, perfect for any culinary exploration. Responsibly sourced and delivered at the peak of freshness.",
+                size: "Up to 150 cm",
+                weight: "12 - 15 lbs",
+                nutri: "Rich Omega-3",
+                full: "./assets/salmon.jpeg",
+                fillet: "./assets/salmon_fillet.jpeg",
+                blend: "multiply"
+            },
+            {
+                idx: "02",
+                tag: "Pacific",
+                name: "Prawn",
+                desc: "Plump, juicy, and sweet. Our King Prawns are sustainably harvested from the warm tropical waters, delivered fresh to preserve their delicate flavor and snap.",
+                size: "Up to 20 cm",
+                weight: "1 - 2 oz",
+                nutri: "Low Fat, High Zinc",
+                full: "./assets/prawn.jpg",
+                fillet: "./assets/prawn_f.jpg",
+                blend: "screen"
+            },
+            {
+                idx: "03",
+                tag: "Rock",
+                name: "Lobster",
+                desc: "Exquisite flavor and firm, sweet meat. Our Rock Lobsters are caught in the pristine coastal waters, ensuring a premium dining experience for the most discerning palates.",
+                size: "Up to 60 cm",
+                weight: "1.5 - 4 lbs",
+                nutri: "High in B12",
+                full: "./assets/lobster.jpg",
+                fillet: "./assets/lobster_f.jpg",
+                blend: "screen"
+            }
+        ];
+
+        let currentIdx = 0;
+        let isAnimating = false;
+        let showFillet = false;
+
+        function updateContent(skipAnim = false) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const fish = collection[currentIdx];
+            const updateUI = () => {
+                document.getElementById('p-idx').innerText = fish.idx;
+                document.getElementById('p-tag').innerText = fish.tag;
+                document.getElementById('p-name').innerText = fish.name;
+                document.getElementById('p-desc').innerText = fish.desc;
+                document.getElementById('p-size').innerText = fish.size;
+                document.getElementById('p-weight').innerText = fish.weight;
+                document.getElementById('p-nutri').innerText = fish.nutri;
+
+                document.getElementById('imgFull').src = fish.full;
+                document.getElementById('imgFillet').src = fish.fillet;
+                
+                // Dynamically apply the correct blend mode
+                document.getElementById('imgFull').style.mixBlendMode = fish.blend;
+                document.getElementById('imgFillet').style.mixBlendMode = fish.blend;
+
+                // Reset view to Full state for the new product
+                showFillet = false;
+                document.getElementById('visualCard').classList.remove('state-fillet');
+            };
+
+            if (skipAnim) {
+                updateUI();
+                isAnimating = false;
+            } else {
+                gsap.to("#content-bundle", {
+                    opacity: 0, y: 30, duration: 0.6, onComplete: () => {
+                        updateUI();
+                        gsap.to("#content-bundle", {
+                            opacity: 1, y: 0, duration: 0.8, onComplete: () => {
+                                isAnimating = false;
+                            }
+                        });
+                    }
+                });
+
+                // Subtle card pop during transition
+                gsap.fromTo("#visualCard", { scale: 0.95, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: "power2.out" });
+            }
+        }
+
+        function toggleVisualState() {
+            if (isAnimating) return;
+            showFillet = !showFillet;
+            const card = document.getElementById('visualCard');
+            if (showFillet) card.classList.add('state-fillet');
+            else card.classList.remove('state-fillet');
+        }
+
+        function next() {
+            currentIdx = (currentIdx + 1) % collection.length;
+            updateContent();
+        }
+
+        function prev() {
+            currentIdx = (currentIdx - 1 + collection.length) % collection.length;
+            updateContent();
+        }
+
+        let wheelCooldown = false;
+        let scrollAcc = 0;
+        window.addEventListener('wheel', (e) => {
+            if (document.body.classList.contains('menu-open') || wheelCooldown || isAnimating) return;
+
+            scrollAcc += e.deltaY;
+
+            // Require a significant deliberate scroll (e.g., trackpad gesture) before triggering
+            if (Math.abs(scrollAcc) < 150) return;
+
+            wheelCooldown = true;
+            setTimeout(() => {
+                wheelCooldown = false;
+                scrollAcc = 0;
+            }, 1800); // Longer cooldown for longer, relaxed animation
+
+            if (scrollAcc > 0) {
+                // Scroll Down
+                if (!showFillet) toggleVisualState();
+                else next();
+            } else {
+                // Scroll Up
+                if (showFillet) toggleVisualState();
+                else prev();
+            }
+            scrollAcc = 0;
+        }, { passive: true });
+
+        function toggleMenu() {
+            const body = document.body;
+            const btn = document.getElementById('menuBtn');
+            const isOpen = body.classList.toggle('menu-open');
+            btn.innerText = isOpen ? '× CLOSE' : '+ MENU';
+        }
+
+        document.getElementById('menuOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'menuOverlay') toggleMenu();
+        });
+
+        updateContent(true);
+    </script>
+</body>
+
+</html>
