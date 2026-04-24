@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us — Shipex Style</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #f4f7f9;
+            --accent: #0066cc;
+            --text-dark: #222222;
+            --text-light: #666666;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--white);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 5%;
+            background: transparent;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--white);
+            clip-path: polygon(0% 0%, 100% 0%, 75% 100%, 0% 100%);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .btn-contact {
+            background: var(--white);
+            color: var(--primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* Hero */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(rgba(0, 51, 102, 0.5), rgba(0, 51, 102, 0.5)), 
+                        url('https://images.unsplash.com/photo-1494412519320-aa613dfb7738?q=80&w=2070&auto=format&fit=crop') center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+            color: var(--white);
+            border-radius: 0 0 50px 50px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumbs {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Info Cards */
+        .info-cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 0 10%;
+            margin-top: -60px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .info-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .info-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .info-card p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Write to Us Section */
+        .form-section {
+            padding: 10rem 10% 5rem;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 5rem;
+            align-items: flex-start;
+        }
+
+        .form-content h2 {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .form-content p {
+            font-size: 1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+
+        .container-img {
+            width: 100%;
+            height: auto;
+            opacity: 0.1;
+            filter: grayscale(1);
+        }
+
+        .form-box {
+            background: var(--white);
+            padding: 4rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .form-box p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border: 1px solid #eeeeee;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .form-grid input {
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            grid-column: span 2;
+            height: 150px;
+            margin-top: 10px;
+        }
+
+        .checkbox-container {
+            grid-column: span 2;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .btn-submit {
+            grid-column: span 2;
+            background: var(--primary);
+            color: var(--white);
+            padding: 1.2rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Partners */
+        .partners-section {
+            padding: 5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eeeeee;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .partner-logo {
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Map */
+        .map-section {
+            height: 500px;
+            width: 100%;
+            background: #eee;
+            position: relative;
+        }
+
+        .map-section iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Subscribe */
+        .subscribe-section {
+            background: #000;
+            padding: 5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 30px;
+            margin: 5rem 5%;
+            color: var(--white);
+        }
+
+        .subscribe-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subscribe-form {
+            display: flex;
+            background: var(--white);
+            padding: 10px;
+            border-radius: 15px;
+            width: 450px;
+        }
+
+        .subscribe-form input {
+            border: none;
+            flex: 1;
+        }
+
+        .btn-subscribe {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0 1.5rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            background: #f8f8f8;
+            padding: 5rem 10% 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-col h4 {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .footer-col p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #eeeeee;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="frontend.html" class="logo">
+            <div class="logo-icon"></div>
+            Forma Garden
+        </a>
+        <ul class="nav-links">
+            <li><a href="frontend.html">Home</a></li>
+            <li><a href="seafood.html">Sea Food</a></li>
+            <li><a href="vegetables-turmeric.html">Vegetables</a></li>
+            <li><a href="textile.html">Textiles</a></li>
+        </ul>
+        <a href="contact.html" class="btn-contact">Contact Us</a>
+    </nav>
+
+    <header class="hero">
+        <h1 class="reveal">Contact Us</h1>
+        <div class="breadcrumbs reveal">Home > Contact Us</div>
+    </header>
+
+    <section class="info-cards-container">
+        <div class="info-card reveal">
+            <div class="info-icon">✉</div>
+            <h3>Mail Us 24/7</h3>
+            <p>formagarden@gmail.com<br>support@formagarden.com</p>
+        </div>
+        <div class="info-card reveal">
+            <div class="info-icon">📍</div>
+            <h3>Our Location</h3>
+            <p>65 Preston Highwood, Maine<br>88380, Hudson Road - 2122</p>
+        </div>
+        <div class="info-card reveal">
+            <div class="info-icon">📞</div>
+            <h3>Call Us 24/7</h3>
+            <p>Phone: +021 235-885-4722<br>Mobile: +0123-888-4132-235</p>
+        </div>
+        <div class="info-card reveal">
+            <div class="info-icon">📅</div>
+            <h3>Working Days</h3>
+            <p>Mon to Fri - 09:00 to 06:00<br>Sat to Sun - Closed</p>
+        </div>
+    </section>
+
+    <section class="form-section">
+        <div class="form-content">
+            <div class="reveal">
+                <p style="color: var(--accent); font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">Contact Us</p>
+                <h2>Write us what you want to know</h2>
+                <p>We carefully screen all of our farmers, so you can rest assured that your home would receive the absolute highest quality of service providing.</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/ISO_6346_shipping_container_45G1.svg" class="container-img" alt="Container">
+            </div>
+        </div>
+        <div class="form-box reveal">
+            <h3>Send a message to staff</h3>
+            <p>Your email address will not be published. Required fields are marked *</p>
+            <form class="form-grid">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <input type="tel" placeholder="Your Phone">
+                <input type="text" placeholder="Subject">
+                <textarea placeholder="Message"></textarea>
+                <div class="checkbox-container">
+                    <input type="checkbox" style="width: auto;">
+                    <label>Save my name, email, and website in this browser for the next time I comment.</label>
+                </div>
+                <button type="submit" class="btn-submit">Get Cost Estimate <span>➔</span></button>
+            </form>
+        </div>
+    </section>
+
+    <section class="partners-section">
+        <div class="partner-logo">Global</div>
+        <div class="partner-logo">Express</div>
+        <div class="partner-logo">Cargo</div>
+        <div class="partner-logo">Expr</div>
+        <div class="partner-logo">Logista</div>
+        <div class="partner-logo">Deliv</div>
+    </section>
+
+    <section class="map-section">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158857.7281065703!2d-0.24168144921875!3d51.52877184921875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C%20UK!5e0!3m2!1sen!2sin!4v1625471234567!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+    </section>
+
+    <section class="subscribe-section reveal">
+        <div class="subscribe-content">
+            <h2>Subscribe for latest<br>updates & insights</h2>
+        </div>
+        <div class="subscribe-form">
+            <input type="email" placeholder="Enter Your Email Address">
+            <button class="btn-subscribe">Subscribe Now ➔</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: var(--primary); margin-bottom: 2rem;">
+                    <div class="logo-icon" style="background: var(--primary);"></div>
+                    Forma Garden
+                </div>
+                <p>Leading the way in organic farming and premium textiles. Sustainability is our core value.</p>
+                <div class="social-links">
+                    <div class="social-icon">f</div>
+                    <div class="social-icon">t</div>
+                    <div class="social-icon">in</div>
+                    <div class="social-icon">i</div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Say Hello</h4>
+                <p>+1 800 123 456 789</p>
+                <p>contact@formagarden.com</p>
+            </div>
+            <div class="footer-col">
+                <h4>Useful Link</h4>
+                <ul class="footer-links">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Our Service</a></li>
+                    <li><a href="#">Company</a></li>
+                    <li><a href="#">News & Media</a></li>
+                    <li><a href="#">Team</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Our Services</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Logistics</a></li>
+                    <li><a href="#">Manufacturing</a></li>
+                    <li><a href="#">Production</a></li>
+                    <li><a href="#">Transportation</a></li>
+                    <li><a href="#">Warehouse</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            Copyright © 2026 Forma Garden. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray(".reveal").forEach(elem => {
+            gsap.to(elem, {
+                scrollTrigger: {
+                    trigger: elem,
+                    start: "top 90%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+    </script>
+</body>
+
+</html>

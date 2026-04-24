@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Textile Collection — Forma Heritage</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --accent: #ff5722;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transform: scale(1.02); /* zoom effect */
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 900;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--text);
+        }
+
+        .slider-container {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .content {
+            flex: 1;
+            z-index: 2;
+        }
+
+        .idx {
+            font-size: 8rem;
+            font-weight: 900;
+            opacity: 0.05;
+            margin-bottom: -3rem;
+            letter-spacing: -5px;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .name {
+            font-size: 7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            line-height: 0.8;
+            margin-bottom: 2.5rem;
+            letter-spacing: -3px;
+        }
+
+        .desc {
+            max-width: 450px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 3.5rem;
+            opacity: 0.7;
+        }
+
+        .stats {
+            display: flex;
+            gap: 5rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-item h4 {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+
+        .stat-item p {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .view-details {
+            display: inline-block;
+            background: var(--text);
+            color: #fff;
+            padding: 1.4rem 3.5rem;
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 0;
+            font-size: 0.8rem;
+            transition: all 0.4s;
+        }
+
+        .view-details:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .image-container {
+            flex: 1;
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-img {
+            width: 85%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            bottom: 8%;
+            right: 10%;
+            display: flex;
+            gap: 0;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 80px;
+            height: 80px;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+        }
+
+        .nav-btn.prev {
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: absolute;
+            top: 2rem;
+            right: 5%;
+            background: #fff;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 600;
+            color: #800020; /* Red Velvet */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            border: none;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(128, 0, 32, 0.2); /* Red Velvet Tint */
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        body.menu-open .menu-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: right;
+        }
+
+        .menu-links a {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #800020;
+            text-decoration: none;
+            text-transform: uppercase;
+            line-height: 1;
+            letter-spacing: -2px;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .menu-links a:hover {
+            color: #000;
+            transform: translateX(-20px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="frontend.html" class="logo">FORMA HERITAGE</a>
+        <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">+ MENU</button>
+    </nav>
+
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-links">
+            <a href="frontend.html">Home</a>
+            <a href="seafood.html">Sea Food</a>
+            <a href="vegetables-turmeric.html">Vegetables</a>
+            <a href="textile.html">Textiles</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </div>
+
+    <div class="slider-container">
+        <!-- Slides added by JS -->
+    </div>
+
+    <div class="nav-buttons">
+        <div class="nav-btn prev" onclick="prev()">←</div>
+        <div class="nav-btn" onclick="next()">→</div>
+    </div>
+
+    <script>
+        const collection = [
+            {
+                idx: "01",
+                tag: "Heritage Silk",
+                name: "Mulberry Satin",
+                desc: "A timeless masterpiece of luxury. Our Mulberry Satin is woven from the finest silk threads, offering a luster and drape that has defined royalty for centuries.",
+                material: "100% Silk",
+                weight: "19 Momme",
+                weave: "Satin",
+                img: "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                idx: "02",
+                tag: "Pure Earth",
+                name: "Raw Linen",
+                desc: "Sustainability meets sophistication. Our Raw Linen is stone-washed for immediate softness while retaining the structural integrity that makes linen the ultimate summer fabric.",
+                material: "Organic Flax",
+                weight: "240 GSM",
+                weave: "Plain",
+                img: "https://images.unsplash.com/photo-1606103836243-7dc8e38f972b?q=80&w=1000&auto=format&fit=crop"
+            },
+            {
+                idx: "03",
+                tag: "Artisan Craft",
+                name: "Indigo Denim",
+                desc: "Woven on vintage shuttle looms. Our selvedge denim is dyed with natural indigo, creating a fabric that ages uniquely with the wearer, telling a personal story through every fade.",
+                material: "Selvedge Cotton",
+                weight: "14.5 Oz",
+                weave: "Twill",
+                img: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=1000&auto=format&fit=crop"
+            }
+        ];
+
+        const container = document.querySelector('.slider-container');
+        let currentIdx = 0;
+
+        function createSlides() {
+            collection.forEach((item, i) => {
+                const slide = document.createElement('div');
+                slide.className = `slide ${i === 0 ? 'active' : ''}`;
+                slide.innerHTML = `
+                    <div class="content">
+                        <div class="idx">${item.idx}</div>
+                        <span class="tag">${item.tag}</span>
+                        <h2 class="name">${item.name}</h2>
+                        <p class="desc">${item.desc}</p>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <h4>Material</h4>
+                                <p>${item.material}</p>
+                            </div>
+                            <div class="stat-item">
+                                <h4>Weight</h4>
+                                <p>${item.weight}</p>
+                            </div>
+                            <div class="stat-item">
+                                <h4>Weave</h4>
+                                <p>${item.weave}</p>
+                            </div>
+                        </div>
+                        <a href="textile-details.html" class="view-details">Explore Heritage</a>
+                    </div>
+                    <div class="image-container">
+                        <img src="${item.img}" class="main-img" alt="${item.name}">
+                    </div>
+                `;
+                container.appendChild(slide);
+            });
+        }
+
+        function next() {
+            const slides = document.querySelectorAll('.slide');
+            gsap.to(slides[currentIdx], { opacity: 0, x: -100, duration: 0.6, ease: "power2.inOut", onComplete: () => {
+                slides[currentIdx].classList.remove('active');
+                currentIdx = (currentIdx + 1) % collection.length;
+                slides[currentIdx].classList.add('active');
+                gsap.fromTo(slides[currentIdx], { opacity: 0, x: 100 }, { opacity: 1, x: 0, duration: 0.6, ease: "power2.inOut" });
+            }});
+        }
+
+        function prev() {
+            const slides = document.querySelectorAll('.slide');
+            gsap.to(slides[currentIdx], { opacity: 0, x: 100, duration: 0.6, ease: "power2.inOut", onComplete: () => {
+                slides[currentIdx].classList.remove('active');
+                currentIdx = (currentIdx - 1 + collection.length) % collection.length;
+                slides[currentIdx].classList.add('active');
+                gsap.fromTo(slides[currentIdx], { opacity: 0, x: -100 }, { opacity: 1, x: 0, duration: 0.6, ease: "power2.inOut" });
+            }});
+        }
+
+        createSlides();
+
+        window.addEventListener("load", () => {
+            document.body.classList.add('loaded');
+            // Immediate intro animation for first slide
+            const firstSlide = document.querySelector('.slide.active');
+            gsap.fromTo(firstSlide.querySelectorAll('.idx, .tag, .name, .desc, .stat-item, .view-details, .image-container'), 
+                { opacity: 0, y: 30 }, 
+                { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }
+            );
+        });
+
+        // Premium Page Transition
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 400);
+                }
+            });
+        });
+
+        function toggleMenu() {
+            const body = document.body;
+            const btn = document.getElementById('menuBtn');
+            const isOpen = body.classList.toggle('menu-open');
+            btn.innerText = isOpen ? '× CLOSE' : '+ MENU';
+        }
+
+        document.getElementById('menuOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'menuOverlay') toggleMenu();
+        });
+    </script>
+</body>
+
+</html>

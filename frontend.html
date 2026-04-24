@@ -38,6 +38,17 @@
             font-weight: 300;
             overflow-x: hidden;
             cursor: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transform: scale(0.98);
         }
 
         /* Custom cursor */
@@ -48,7 +59,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 10000;
             /* use transform for position — GPU composited, zero layout cost */
             will-change: transform;
             transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s;
@@ -63,7 +74,7 @@
             border-radius: 50%;
             position: fixed;
             pointer-events: none;
-            z-index: 9998;
+            z-index: 9999;
             will-change: transform;
             transition: width 0.25s ease, height 0.25s ease, border-color 0.25s, background 0.25s, opacity 0.25s;
             top: 0;
@@ -136,7 +147,7 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 100;
+            z-index: 9999 !important;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -462,7 +473,7 @@
             display: block;
             margin: auto;
             transition: transform 0.5s ease;
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
         }
 
         .product-card.featured .product-img {
@@ -795,12 +806,13 @@
                 text-align: center;
             }
         }
-    
+
         /* Dropdown */
         .dropdown {
             position: relative;
             display: inline-block;
         }
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -809,19 +821,21 @@
             transform: translateX(-50%) translateY(10px);
             background-color: var(--surface);
             min-width: 200px;
-            box-shadow: 0px 8px 24px 0px rgba(0,0,0,0.06);
+            box-shadow: 0px 8px 24px 0px rgba(0, 0, 0, 0.06);
             z-index: 101;
             border-radius: 4px;
             border: 1px solid var(--border);
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
+
         .dropdown:hover .dropdown-content {
             display: flex;
             flex-direction: column;
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
         .dropdown-content a {
             color: var(--text) !important;
             padding: 12px 16px;
@@ -830,11 +844,11 @@
             font-size: 0.75rem;
             transition: background 0.2s, color 0.2s !important;
         }
+
         .dropdown-content a:hover {
             background-color: var(--card-bg) !important;
             color: var(--accent) !important;
         }
-
     </style>
 </head>
 
@@ -858,7 +872,7 @@
                 </div>
             </li>
             <li><a href="#about">About Us</a></li>
-            <li><a href="#story">Contact Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
         </ul>
     </nav>
 
@@ -915,36 +929,42 @@
             <!-- Featured card -->
             <a href="seafood.html" class="product-card" style="text-decoration: none;">
                 <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #4a7c99; color: white;">🐟</div>
+                    <div class="img-placeholder"
+                        style="aspect-ratio:1; min-height: 180px; background: #4a7c99; color: white;">🐟</div>
                     <span class="card-tag">Fresh</span>
                 </div>
                 <div class="card-body">
                     <div class="card-name">Premium Sea Food</div>
-                    <div class="card-desc">Sustainably sourced from the deep blue sea. Hand-inspected for quality and freshness.</div>
+                    <div class="card-desc">Sustainably sourced from the deep blue sea. Hand-inspected for quality and
+                        freshness.</div>
                 </div>
             </a>
 
             <!-- Card 2 -->
             <a href="vegetables-turmeric.html" class="product-card" style="text-decoration: none;">
                 <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #6b8e4e; color: white;">🥦</div>
+                    <div class="img-placeholder"
+                        style="aspect-ratio:1; min-height: 180px; background: #6b8e4e; color: white;">🥦</div>
                     <span class="card-tag">Organic</span>
                 </div>
                 <div class="card-body">
                     <div class="card-name">Vegetables & Turmeric</div>
-                    <div class="card-desc">Fresh, organic vegetables and premium turmeric, cultivated without harmful chemicals.</div>
+                    <div class="card-desc">Fresh, organic vegetables and premium turmeric, cultivated without harmful
+                        chemicals.</div>
                 </div>
             </a>
 
             <!-- Card 3 -->
             <a href="textile.html" class="product-card" style="text-decoration: none;">
                 <div class="card-img-wrap">
-                    <div class="img-placeholder" style="aspect-ratio:1; min-height: 180px; background: #c8766e; color: white;">🧵</div>
+                    <div class="img-placeholder"
+                        style="aspect-ratio:1; min-height: 180px; background: #c8766e; color: white;">🧵</div>
                     <span class="card-tag">Artisanal</span>
                 </div>
                 <div class="card-body">
                     <div class="card-name">Textile Collection</div>
-                    <div class="card-desc">Finely crafted textiles made from sustainable fibers by master artisans.</div>
+                    <div class="card-desc">Finely crafted textiles made from sustainable fibers by master artisans.
+                    </div>
                 </div>
             </a>
 
@@ -1097,6 +1117,24 @@
 
         // Navbar scroll
         const navbar = document.getElementById('navbar');
+        window.addEventListener("load", () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Premium Page Transition
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 400);
+                }
+            });
+        });
+
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 20);
         }, { passive: true });

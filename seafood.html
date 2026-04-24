@@ -40,6 +40,18 @@
             font-weight: 300;
             overflow-x: hidden;
             cursor: none;
+            backface-visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transform: scale(0.98);
         }
 
         /* Custom cursor */
@@ -858,7 +870,7 @@
             display: block;
             margin: auto;
             transition: transform 0.5s ease;
-            filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
         }
 
         .product-card.featured .product-img {
@@ -1350,7 +1362,7 @@
                 </h2>
                 <p class="hero-desc">Peça já o seu e complete a sua dieta com o melhor que o oceano tem a oferecer.</p>
                 <div class="hero-actions" style="margin-top: 3rem; display: flex; gap: 1.5rem;">
-                    <a href="collection.html" class="btn-primary">Explore Collection</a>
+                    <a href="seafood-collection.html" class="btn-primary">Explore Collection</a>
                     <a href="details.html" class="btn-ghost">View Details</a>
                 </div>
             </div>
@@ -1548,7 +1560,7 @@
         <div class="section-tag" style="justify-content: center;">Get Started</div>
         <h2>Ready to find your<br><em>perfect piece?</em></h2>
         <p>Browse the full collection and discover objects made to live with you — not just look good.</p>
-        <a href="collection.html" class="btn-primary">Explore the Collection</a>
+        <a href="seafood-collection.html" class="btn-primary">Explore the Collection</a>
     </div>
 
     <!-- Footer -->
@@ -1640,6 +1652,25 @@
 
         // Navbar scroll
         const navbar = document.getElementById('navbar');
+        window.addEventListener("load", () => {
+            document.body.classList.add('loaded');
+            ScrollTrigger.refresh();
+        });
+
+        // Premium Page Transition
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 400);
+                }
+            });
+        });
+
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 20);
 

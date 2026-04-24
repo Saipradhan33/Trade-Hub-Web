@@ -1,0 +1,425 @@
+<html lang="en" class="vegetables">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forma Garden — Organic Collection</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root.vegetables {
+            --bg-primary: #f4f7f2;
+            --bg-secondary: #e8efe3;
+            --accent: #4caf50;
+            --text-primary: #2b2b2b;
+            --text-secondary: #6b6b6b;
+            --border-light: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transform: scale(0.98);
+        }
+
+        section {
+            background-color: var(--bg-secondary);
+            transition: background 0.5s ease;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-oswald {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .fade-text {
+            position: relative;
+            display: inline-block;
+            color: #1f3d2b;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(244, 247, 242, 0.5);
+            backdrop-filter: blur(15px);
+            transition: background 0.3s, padding 0.3s;
+        }
+
+        nav.scrolled {
+            background: rgba(244, 247, 242, 0.9);
+            padding: 1rem 5%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo-box {
+            border: 1px solid var(--border-light);
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--bg-primary);
+            min-width: 200px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            z-index: 2001;
+            border-radius: 4px;
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-content a {
+            padding: 12px 16px;
+            display: block;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.75rem;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10rem 5% 5rem;
+            background: url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat;
+            z-index: 1;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.75);
+            z-index: 1;
+        }
+
+        .hero-content-wrapper {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, #ffffff 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        .hero-top-text {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 450px;
+            border-left: 2px solid var(--accent);
+            padding-left: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-bottom {
+            margin-bottom: 5vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-headline {
+            font-size: clamp(4rem, 10vw, 10rem);
+            line-height: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Categories */
+        .categories-wrapper {
+            position: relative;
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+            margin-top: 10vh;
+            justify-content: center;
+        }
+
+        .cat-card {
+            width: 260px;
+            background: var(--bg-primary);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+            padding: 4rem 2rem 2rem;
+            text-align: center;
+            border-radius: 4px;
+            position: relative;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .cat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+        }
+
+        .cat-img {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100px;
+            width: auto;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.5));
+        }
+
+        .massive-section {
+            position: relative;
+            padding: 20vh 10%;
+            background: #ffffff;
+            color: #222;
+        }
+
+        .massive-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, #ffffff 0%, transparent 100%);
+            z-index: 2;
+        }
+
+        .reveal-element {
+            opacity: 0.2;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href="vegetables-turmeric.html" style="text-decoration:none; color:var(--text-primary);">
+            <div class="logo-box">
+                FORMA GARDEN<br>
+                <div style="font-size: 0.6rem; letter-spacing: 3px; color: var(--accent);">ORGANIC SINCE 1990
+                </div>
+            </div>
+        </a>
+        <div class="nav-links">
+            <a href="frontend.html">Home</a>
+            <div class="dropdown">
+                <a href="frontend.html#products">Products ▾</a>
+                <div class="dropdown-content">
+                    <a href="seafood.html">Sea Food</a>
+                    <a href="vegetables-turmeric.html">Vegetables & Turmeric</a>
+                    <a href="textile.html">Textiles</a>
+                </div>
+            </div>
+            <a href="frontend.html#about">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content-wrapper">
+            <div class="hero-top-text">
+                BORN FROM RICH EARTH AND SUSTAINABLE CRAFT.
+            </div>
+
+            <div class="hero-bottom">
+                <h1 class="hero-headline fade-text" style="font-size: clamp(4rem, 8vw, 8rem); line-height: 1; font-weight: 700;">ORGANIC<br>HARVEST</h1>
+                <div class="hero-subtext" style="max-width: 500px; color: #555; font-size: 0.9rem; letter-spacing: 1px;">
+                    TRACING EVERY SEED TO YOUR TABLE. WE SPECIALIZE IN PURE TURMERIC, ORGANIC SPICES, AND SEASONAL HARVESTS.
+                </div>
+            </div>
+
+            <div class="categories-wrapper">
+                <a href="#" class="cat-card">
+                    <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=200&auto=format&fit=crop"
+                        alt="Turmeric" class="cat-img">
+                    <h3>Pure Turmeric</h3>
+                    <p style="font-size: 0.7rem; color: var(--accent); margin-top: 10px;">VIEW COLLECTION &rarr;</p>
+                </a>
+                <a href="#" class="cat-card">
+                    <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=200&auto=format&fit=crop"
+                        alt="Spices" class="cat-img">
+                    <h3>Organic Spices</h3>
+                    <p style="font-size: 0.7rem; color: var(--accent); margin-top: 10px;">VIEW COLLECTION &rarr;</p>
+                </a>
+                <a href="#" class="cat-card">
+                    <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?q=80&w=200&auto=format&fit=crop"
+                        alt="Herbs" class="cat-img">
+                    <h3>Garden Herbs</h3>
+                    <p style="font-size: 0.7rem; color: var(--accent); margin-top: 10px;">VIEW COLLECTION &rarr;</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="massive-section">
+        <h2 class="fade-text reveal-element" style="font-size: 6rem; line-height: 1;">THE ESSENCE<br>OF NATURE</h2>
+        <p class="reveal-element"
+            style="max-width: 600px; line-height: 1.8; color: var(--text-secondary); margin-top: 4rem; font-size: 1.1rem;">
+            Purity is our promise. Our turmeric is stone-ground to preserve its essential oils, and our vegetables are
+            harvested at the peak of their nutritional value. We don't just farm; we curate the best of the earth.
+        </p>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to(".hero-headline", {
+            y: 100,
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+
+        gsap.to(".cat-card", {
+            y: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top 20%",
+            }
+        });
+
+        window.addEventListener("load", () => {
+            document.body.classList.add('loaded');
+        });
+
+        // Premium Page Transition
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript')) {
+                    e.preventDefault();
+                    document.body.classList.add('fade-out');
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 400);
+                }
+            });
+        });
+
+        gsap.utils.toArray(".reveal-element").forEach(el => {
+            gsap.to(el, {
+                y: 0,
+                opacity: 1,
+                duration: 0.8, /* calmer duration */
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 80%",   /* later appearance for calm feel */
+                    toggleActions: "play none none none"
+                }
+            });
+        });
+
+        gsap.to(".massive-section", {
+            backgroundPosition: "center 20%",
+            scrollTrigger: {
+                trigger: ".massive-section",
+                scrub: true
+            }
+        });
+    </script>
+</body>
+
+</html>
